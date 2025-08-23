@@ -1,4 +1,4 @@
-![Diabetes Prediction Image](diabetes_prediction.jpeg)
+![Diabetes Prediction Image](diabetes-prediction.jpeg)
 
 # Diabetes Prediction using Machine Learning
 
