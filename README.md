@@ -1,64 +1,86 @@
-# Diabetes Prediction Using Machine Learning
+## Diabetes Prediction Using Machine Learning
 
-A comparative study of classification algorithms for predicting diabetes onset using the Pima Indians Diabetes dataset. Implements Logistic Regression, SVM, and KNN with hyperparameter tuning via Grid Search to identify the best-performing model.
+A comparative study of classification algorithms to predict diabetes onset from clinical measurements, with hyperparameter tuning via GridSearchCV to optimize model performance.
 
-## Problem Statement
+### Highlights
 
-Early detection of diabetes can significantly improve patient outcomes. This project builds and compares multiple ML classifiers to predict whether a patient is diabetic based on diagnostic health measurements, with a focus on finding the optimal model through systematic hyperparameter tuning.
+- Compared 3 classifiers (Logistic Regression, SVM, KNN) with systematic hyperparameter tuning using 5-fold cross-validation
+- Achieved 75% test accuracy with a tuned SVM (linear kernel, C=1) — the best-performing model with 77% cross-validation score
+- Addressed biologically impossible zero values in 5 features through median imputation before training
+- Built a complete pipeline from preprocessing through evaluation with confusion matrix visualizations
 
-## Dataset
+### Problem Statement
 
-- **Source:** [Pima Indians Diabetes Database](https://www.kaggle.com/uciml/pima-indians-diabetes-database)
-- **Records:** 768 patients
-- **Features (8):** `Pregnancies`, `Glucose`, `BloodPressure`, `SkinThickness`, `Insulin`, `BMI`, `DiabetesPedigreeFunction`, `Age`
-- **Target:** `Outcome` (1 = Diabetic, 0 = Non-Diabetic)
-- **Class Split:** 65% Non-Diabetic, 35% Diabetic
+Early detection of diabetes is critical for effective medical intervention and patient outcomes. This project uses the Pima Indians Diabetes Database — containing 8 clinical features from 768 patients — to build and compare multiple ML classifiers. The goal is to identify which algorithm generalizes best on unseen data after proper preprocessing and hyperparameter tuning.
 
-## Approach
+### Dataset
 
-1. **Preprocessing** — Replaced biologically impossible zero values in `Glucose`, `BloodPressure`, `SkinThickness`, `Insulin`, `BMI` with NaN, then imputed using median values
-2. **Feature Scaling** — Applied `StandardScaler` for distance-based models (SVM, KNN)
-3. **Train/Test Split** — 80/20 split with `random_state=42`
-4. **Model Training** — Logistic Regression, SVM (RBF kernel), KNN (k=5)
-5. **Hyperparameter Tuning** — Grid Search with 5-fold CV on SVM (`C`, `kernel`, `gamma`) and KNN (`n_neighbors`, `weights`, `metric`)
+- **Source:** [Pima Indians Diabetes Database](https://www.kaggle.com/uciml/pima-indians-diabetes-database) (Kaggle)
+- **Size:** 768 patients × 9 columns (8 features + 1 target)
+- **Target:** `Outcome` (binary — 1 = Diabetic, 0 = Non-Diabetic)
+- **Class distribution:** 65% Non-Diabetic (500), 35% Diabetic (268)
+- **Features:** Pregnancies, Glucose, BloodPressure, SkinThickness, Insulin, BMI, DiabetesPedigreeFunction, Age
+- **Data quality issue:** Biologically impossible zero values in Glucose, BloodPressure, SkinThickness, Insulin, and BMI — handled via median imputation
 
-## Key Results
+### Tech Stack
 
-| Model | Accuracy | Precision (Diabetic) | Recall (Diabetic) | F1 (Diabetic) |
-|---|---|---|---|---|
-| Logistic Regression | 0.75 | 0.67 | 0.62 | 0.64 |
-| SVM (default RBF) | 0.75 | 0.67 | 0.58 | 0.62 |
-| KNN (k=5) | 0.72 | 0.60 | 0.67 | 0.63 |
-| **SVM (Tuned — linear, C=1)** | **0.75** | **0.67** | **0.62** | **0.64** |
-| KNN (Tuned — manhattan, k=7) | 0.73 | 0.61 | 0.65 | 0.63 |
+![Python](https://img.shields.io/badge/Python-3.x-blue)
+![Scikit-Learn](https://img.shields.io/badge/Scikit--Learn-ML-orange)
+![Pandas](https://img.shields.io/badge/Pandas-Data-green)
+![NumPy](https://img.shields.io/badge/NumPy-Compute-yellow)
+![Seaborn](https://img.shields.io/badge/Seaborn-Viz-teal)
+![Matplotlib](https://img.shields.io/badge/Matplotlib-Plots-red)
 
-- **Best Model:** SVM with linear kernel (C=1, gamma=scale) — 75% accuracy, best precision-recall balance
-- **Grid Search CV Score:** 0.77 (SVM), 0.77 (KNN)
+### Methodology
 
-## Tech Stack
+1. **Data Loading & EDA** — Imported the dataset and visualized the class distribution (65/35 split) using countplots
+2. **Data Cleaning** — Identified and replaced biologically impossible zeros in 5 features with NaN, then imputed using column medians
+3. **Feature Scaling** — Applied StandardScaler to normalize all 8 features for distance-based models (SVM, KNN)
+4. **Train-Test Split** — 80/20 split with `random_state=42` (614 train, 154 test samples)
+5. **Baseline Training** — Trained Logistic Regression, SVM (RBF kernel), and KNN (k=5) as baseline models
+6. **Hyperparameter Tuning** — Used GridSearchCV with 5-fold cross-validation to tune SVM (C: [0.1, 1, 10], kernel: [linear, rbf, poly], gamma: [scale, auto]) and KNN (n_neighbors: [3, 5, 7, 9, 11, 13], weights: [uniform, distance], metric: [euclidean, manhattan])
+7. **Evaluation** — Compared all 5 models on accuracy, precision, recall, F1-score, and confusion matrix heatmaps
 
-- **Language:** Python
-- **Libraries:** Scikit-learn, Pandas, NumPy, Seaborn, Matplotlib
-- **Techniques:** Logistic Regression, SVM, KNN, Grid Search CV, StandardScaler, Confusion Matrix Analysis
+### Key Results
 
-## Project Structure
+| Model | Test Accuracy | CV Score | Precision (Diabetic) | Recall (Diabetic) | F1 (Diabetic) |
+|---|---|---|---|---|---|
+| Logistic Regression | 75% | — | 0.67 | 0.62 | 0.64 |
+| SVM (Baseline, RBF) | 75% | — | 0.67 | 0.58 | 0.62 |
+| KNN (Baseline, k=5) | 72% | — | 0.60 | 0.67 | 0.63 |
+| **SVM (Tuned, Linear, C=1)** | **75%** | **77%** | **0.67** | **0.62** | **0.64** |
+| KNN (Tuned, k=7, Manhattan) | 73% | 77% | 0.61 | 0.65 | 0.63 |
 
-```
-├── Diabetes_Prediction.ipynb   # Full analysis and modeling notebook
-├── archive.zip                 # Dataset (Pima Indians Diabetes)
-├── diabetes-prediction.jpeg    # Visualization
-└── README.md
-```
+**Best model:** Tuned SVM with `C=1, kernel='linear', gamma='scale'` — 75% test accuracy with the best precision-recall balance on the diabetic class. Both tuned models achieved 77% on cross-validation, indicating good generalization.
 
-## How to Run
+### How to Run
 
 ```bash
-unzip archive.zip
+git clone https://github.com/mahi-sharmas/Diabetes-Prediction.git
+cd Diabetes-Prediction
+pip install -r requirements.txt
 jupyter notebook Diabetes_Prediction.ipynb
 ```
 
-## Author
+### Project Structure
 
-**Mahi Sharma**
-B.Tech CSE (Data Science) — Manipal University Jaipur
-[GitHub](https://github.com/mahi-sharmas)
+```
+Diabetes-Prediction/
+├── Diabetes_Prediction.ipynb    # Full ML pipeline — EDA, preprocessing, training, tuning, evaluation
+├── archive.zip                  # Compressed Pima Indians Diabetes dataset
+├── diabetes-prediction.jpeg     # Project visualization
+├── requirements.txt             # Python dependencies
+└── README.md                    # Project documentation
+```
+
+### Future Improvements
+
+- Add ensemble methods (Random Forest, XGBoost, Gradient Boosting) to push accuracy beyond 75%
+- Implement SHAP or LIME for model interpretability to identify which clinical features drive diabetes predictions
+- Build a Flask or Streamlit web interface for real-time patient risk assessment
+
+### Author
+
+**Mahi Sharma** — B.Tech CSE (Data Science), Manipal University Jaipur (2023–2027)
+
+GitHub: [github.com/mahi-sharmas](https://github.com/mahi-sharmas) | Email: mahi.sh4rma7@gmail.com
